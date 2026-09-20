@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Opening AR View...</title>
+  <script>
+    window.onload = function() {
+      // 1. Get the model name from URL query parameter (e.g., ?model=pizza)
+      const urlParams = new URLSearchParams(window.location.search);
+      const modelName = urlParams.get('model') || 'default';
+
+      // 2. Base URL of your hosted GitHub Pages repository
+      const baseUrl = window.location.origin + window.location.pathname.replace('ar.html', '');
+
+      // 3. Construct direct file paths
+      const usdzUrl = baseUrl + 'models/' + modelName + '.usdz';
+      const glbUrl = baseUrl + 'models/' + modelName + '.glb';
+
+      // 4. Detect user's Operating System
+      const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isIOS) {
+        // iOS: Create a direct AR Quick Look link and simulate a tap
+        const anchor = document.createElement('a');
+        anchor.setAttribute('rel', 'ar');
+        anchor.setAttribute('href', usdzUrl);
+        
+        const img = document.createElement('img');
+        anchor.appendChild(img);
+        document.body.appendChild(anchor);
+
+        // Instantly trigger AR Quick Look
+        anchor.click();
+      } else {
+        // Android: Launch Google Scene Viewer natively
+        const intentUrl = "intent://arvr.google.com/scene-viewer/1.0?file=" + encodeURIComponent(glbUrl) +
+          "&mode=ar_only#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;end;";
+
+        window.location.href = intentUrl;
+      }
+    };
+  </script>
+</head>
+<body style="font-family: sans-serif; text-align: center; padding-top: 50px;">
+  <h2>Launching Augmented Reality...</h2>
+  <p>If AR doesn't open automatically, please ensure your camera and browser permissions are allowed.</p>
+</body>
+</html>
